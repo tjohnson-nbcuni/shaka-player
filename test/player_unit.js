@@ -333,8 +333,9 @@ describe('Player', () => {
       it('fires after tracks have been filtered', async () => {
         streamingListener.and.callFake(() => {
           const tracks = player.getVariantTracks();
-          // Either WebM, or MP4, but not both.
-          expect(tracks.length).toBe(1);
+          // NOTE: This is now both due to codec switching additional
+          // variants.
+          expect(tracks.length).toBe(2);
         });
         await runTest();
       });

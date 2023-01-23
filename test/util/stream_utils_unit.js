@@ -472,6 +472,61 @@ describe('StreamUtils', () => {
     });
   });
 
+  describe('codec switching', () => {
+    let fakeDrmEngine;
+
+    beforeAll(() => {
+      fakeDrmEngine = new shaka.test.FakeDrmEngine();
+    });
+
+    it('should not filter out variants ' +
+    'based on codecs if a strategy is enabled', async () => {
+      manifest = shaka.test.ManifestGenerator.generate((manifest) => {
+        manifest.addVariant(0, (variant) => {
+          variant.addAudio(0, (stream) => {
+            stream.channelsCount = 2;
+            stream.codecs = 'mp4a.40.2';
+          });
+        });
+        manifest.addVariant(1, (variant) => {
+          variant.addAudio(1, (stream) => {
+            stream.channelsCount = 6;
+            stream.codecs = 'ec-3';
+          });
+        });
+      });
+
+      const originalFilterByCurrentVariantFunc =
+       shaka.util.StreamUtils.filterManifestByCurrentVariant;
+      const filterSpy = jasmine.createSpy('filterManifestByCurrentVariant');
+      shaka.util.StreamUtils.filterManifestByCurrentVariant =
+        shaka.test.Util.spyFunc(filterSpy);
+
+      await shaka.util.StreamUtils.filterManifest(
+          fakeDrmEngine, null, manifest,
+          shaka.config.CodecSwitchingStrategy.DISABLED);
+
+      expect(filterSpy).toHaveBeenCalled();
+      filterSpy.calls.reset();
+
+      await shaka.util.StreamUtils.filterManifest(
+          fakeDrmEngine, null, manifest,
+          shaka.config.CodecSwitchingStrategy.RELOAD);
+
+      expect(filterSpy).not.toHaveBeenCalled();
+      filterSpy.calls.reset();
+
+      await shaka.util.StreamUtils.filterManifest(
+          fakeDrmEngine, null, manifest,
+          shaka.config.CodecSwitchingStrategy.SMOOTH);
+
+      expect(filterSpy).not.toHaveBeenCalled();
+
+      shaka.util.StreamUtils.filterManifestByCurrentVariant =
+       originalFilterByCurrentVariantFunc;
+    });
+  });
+
   describe('getDecodingInfosForVariants', () => {
     it('for multiplexd content', async () => {
       manifest = shaka.test.ManifestGenerator.generate((manifest) => {

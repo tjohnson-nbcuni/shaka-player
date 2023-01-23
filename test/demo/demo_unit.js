@@ -96,8 +96,8 @@ describe('Demo', () => {
           .add('manifest.dash.keySystemsByURI')
           .add('manifest.hls.mediaPlaylistFullMimeType')
           .add('drm.keySystemsMapping')
-          .add('streaming.parsePrftBox');
-
+          .add('streaming.parsePrftBox')
+          .add('streaming.codecSwitchingStrategy');
       /**
        * @param {!Object} section
        * @param {string} accumulatedName

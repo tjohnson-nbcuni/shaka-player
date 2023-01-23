@@ -130,6 +130,10 @@ shaka.test.FakeMediaSourceEngine = class {
             .and.returnValue(new shaka.test.FakeTextDisplayer());
 
     /** @type {!jasmine.Spy} */
+    this.needsReload =
+    jasmine.createSpy('needsReload');
+
+    /** @type {!jasmine.Spy} */
     this.setSegmentRelativeVttTiming =
         jasmine.createSpy('setSegmentRelativeVttTiming').and.stub();
 

@@ -435,6 +435,7 @@ describe('MediaSourceEngine', () => {
 
   it('trims content at the append window', async () => {
     const initObject = new Map();
+    const stream = getFakeStream(metadata.video);
     initObject.set(ContentType.VIDEO, getFakeStream(metadata.video));
     await mediaSourceEngine.init(initObject, false);
     await mediaSourceEngine.setDuration(presentationDuration);
@@ -443,6 +444,8 @@ describe('MediaSourceEngine', () => {
         /* timestampOffset= */ 0,
         /* appendWindowStart= */ 5,
         /* appendWindowEnd= */ 18,
+        /* codecs= */ stream.codecs,
+        /* mimeType= */ stream.mimeType,
         /* sequenceMode= */ false);
     expect(buffered(ContentType.VIDEO, 0)).toBe(0);
     await append(ContentType.VIDEO, 0);
@@ -473,6 +476,7 @@ describe('MediaSourceEngine', () => {
 
   it('does not remove when overlap is outside append window', async () => {
     const initObject = new Map();
+    const stream = getFakeStream(metadata.video);
     initObject.set(ContentType.VIDEO, getFakeStream(metadata.video));
     await mediaSourceEngine.init(initObject, false);
     await mediaSourceEngine.setDuration(presentationDuration);
@@ -482,6 +486,8 @@ describe('MediaSourceEngine', () => {
         /* timestampOffset= */ 0,
         /* appendWindowStart= */ 0,
         /* appendWindowEnd= */ 20,
+        /* codecs= */ stream.codecs,
+        /* mimeType= */ stream.mimeType,
         /* sequenceMode= */ false);
     await append(ContentType.VIDEO, 0);
     await append(ContentType.VIDEO, 1);
@@ -495,6 +501,8 @@ describe('MediaSourceEngine', () => {
         /* timestampOffset= */ 15,
         /* appendWindowStart= */ 20,
         /* appendWindowEnd= */ 35,
+        /* codecs= */ stream.codecs,
+        /* mimeType= */ stream.mimeType,
         /* sequenceMode= */ false);
     await append(ContentType.VIDEO, 0);
     await append(ContentType.VIDEO, 1);
