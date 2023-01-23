@@ -938,6 +938,7 @@ shaka.extern.ManifestConfiguration;
 
 /**
  * @typedef {{
+ *   codecSwitchingStrategy: shaka.config.CodecSwitchingStrategy,
  *   retryParameters: shaka.extern.RetryParameters,
  *   failureCallback: function(!shaka.util.Error),
  *   rebufferingGoal: number,
@@ -967,7 +968,10 @@ shaka.extern.ManifestConfiguration;
  *
  * @description
  * The StreamingEngine's configuration options.
- *
+ * @property {shaka.config.CodecSwitchingStrategy} codecSwitchingStrategy
+ *  Allow codec switching strategy. Default behavior is disabled.
+ *  Smooth loading uses SourceBuffer.changeType. Reload uses cycling of
+ *  MediaSource.
  * @property {shaka.extern.RetryParameters} retryParameters
  *   Retry parameters for segment requests.
  * @property {function(!shaka.util.Error)} failureCallback
